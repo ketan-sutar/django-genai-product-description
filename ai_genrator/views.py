@@ -7,6 +7,9 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework import status
 
+from .serializers import ProductDetialsSerializer
+from .models import ProductDetials
+from .utils import generate_ai_description
 
 def home(request):
     return render(request, 'home.html')
@@ -17,35 +20,61 @@ def home(request):
 
 @api_view(['POST'])
 def generate_single_product_details(request):
-    data=request.data
-    
-    required_filds=['product_name','material','color','audience']
-    for field in required_filds:
+    data = request.data
+
+    required_fields = ['product_name', 'material', 'color', 'audience']
+    for field in required_fields:
         if field not in data:
             return Response(
                 {"error": f"'{field}' is required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-    
-    # print user entered data
-    print("User Entered Data:")
-    for key, value in data.items():
-        print(f"{key}: {value}")
-    # Dummy response
+
+    max_words = int(data.get("max_words", 50))  # default 50 words
+
+    try:
+        raw_description = generate_ai_description(
+    data['product_name'],
+    data['material'],
+    data['color'],
+    data['audience'],
+    max_words
+)
+
+# ✅ Split AI response into 3 parts
+        parts = [part.strip() for part in raw_description.split("\n\n") if part.strip()]
+
+        descriptions = {
+            "description_1": parts[0] if len(parts) > 0 else "",
+            "description_2": parts[1] if len(parts) > 1 else "",
+            "description_3": parts[2] if len(parts) > 2 else "",
+        }
+
+    except Exception as e:
+        return Response(
+            {"error": "AI generation failed", "details": str(e)},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE
+        )
+
+    product = ProductDetials.objects.create(
+        product_name=data['product_name'],
+        material=data['material'],
+        color=data['color'],
+        audience=data['audience'],
+        description=descriptions
+    )
+
+    serializer = ProductDetialsSerializer(product)
+
     return Response(
         {
             "message": "Product details generated successfully",
-            "product_name": data.get("product_name"),
-            "material": data.get("material"),
-            "color": data.get("color"),
-            "audience": data.get("audience"),
-            "description": "This is a dummy description generated for the product."
+            "data": serializer.data
         },
         status=status.HTTP_200_OK
     )
-    
-    
-    
+
+  
 
 
 

@@ -12,4 +12,4 @@ class BulkProductDetialsSerializer(serializers.Serializer):
     material=serializers.CharField(max_length=200)
     color=serializers.CharField(max_length=100)
     audience=serializers.CharField(max_length=200)
-    description=serializers.TextField()
+    description=serializers.CharField()
