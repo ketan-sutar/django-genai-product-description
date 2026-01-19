@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'ai_genrator',
+    'corsheaders',
 
 ]
 
@@ -50,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+
 ]
 
 ROOT_URLCONF = 'ai_product.urls'
@@ -120,7 +123,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 
-OPENROUTER_API_KEY = "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"
+# OPENROUTER_API_KEY = "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"
 # OpenRouter (optional metadata)
 OPENROUTER_SITE_URL = "http://localhost:8000"
 OPENROUTER_SITE_NAME = "AI Product Generator"
+
+
+CORS_ALLOW_ALL_ORIGINS = True  # dev only
