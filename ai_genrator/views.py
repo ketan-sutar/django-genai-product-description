@@ -2,7 +2,7 @@ import csv
 import io
 
 from django.shortcuts import render
-from rest_framework.decorators import api_view, parser_classes
+from rest_framework.decorators import api_view, parser_classes,permission_classes
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,14 +11,19 @@ from .serializers import ProductDetialsSerializer
 from .models import ProductDetials
 from .utils import generate_ai_description
 
+
+from rest_framework.permissions import IsAuthenticated
+
+
 def home(request):
     return render(request, 'home.html')
 
 
 
 
-
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
+
 def generate_single_product_details(request):
     data = request.data
 

@@ -7,4 +7,6 @@ const API = axios.create({
   },
 });
 
-export default API;
+export const generateProductDescription = async (data) => {
+  return await API.post("/generate-single/", data);
+};

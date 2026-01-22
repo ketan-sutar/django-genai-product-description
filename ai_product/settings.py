@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'ai_genrator',
     'corsheaders',
+    'rest_framework_simplejwt',
 
 ]
 
@@ -130,3 +131,10 @@ OPENROUTER_SITE_NAME = "AI Product Generator"
 
 
 CORS_ALLOW_ALL_ORIGINS = True  # dev only
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
